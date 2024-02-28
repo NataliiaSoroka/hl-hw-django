@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block header %}
+  <h1>{% block title %}Welcome{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="h-full flex items-center justify-center">
+  <div class="w-3/5 h-2/3 text-black bg-gray-200 rounded p-10 flex flex-col items-center justify-center">
+    <div class="text-3xl text-center">
+      Welcome, {{ username }}
+    </div>
+    <div class="text-center">
+      <a
+          class="underline underline-offset-4 hover:text-blue-600 text-blue-400 pr-3"
+          href="{% url 'members_app' %}"
+      >
+          Home
+      </a>
+      <a
+          class="underline underline-offset-4 hover:text-blue-600 text-blue-400"
+          href="{% url 'members_todo' %}"
+      >
+          Todo
+      </a>
+  </div>
+  </div>
+</div>
+{% endblock %}

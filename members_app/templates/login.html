@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block header %}
+  <h1>{% block title %} Welcome {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="h-full flex items-center justify-center">
+  <div class="w-3/5 h-2/3 text-black bg-gray-200 rounded p-10 flex flex-col items-center justify-center">
+    <div class="text-3xl text-center pb-5">
+      Introduce yourself, please
+    </div>
+    <form action="{% url 'members_login' %}" method="post" class="w-3/4">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="w-full pb-3">
+          {{ field.label }}
+        </div>
+        <div class="w-full pb-3">
+          {{ field }}
+        </div>
+      {% endfor %}
+      <div class="w-full">
+        <button type="submit" class="h-8 px-3 w-full rounded-md shadow text-white bg-blue-500">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block header %}
+<h1>{% block title %}Todo list{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="h-full">
+  <div class="text-black bg-gray-200 rounded p-10">
+    <form action="{% url 'members_todo' %}" method="post" class="flex items-center">
+      {% csrf_token %}
+      <div class="w-96">
+        {{ form.title }}
+      </div>
+      <div class="ml-6 ">
+        <button type="submit" class="h-8 px-3 w-full rounded-md shadow text-white bg-blue-500">Send</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="text-black bg-gray-200 rounded p-10 mt-6">
+    {% if todo_list %}
+    <ul class="grid grid-cols-1 divide-y">
+      {% for todo in todo_list %}
+      <li class="py-3 flex items-center border-gray-500	">
+        <a href="{% url 'members_todo_update' todo.id %}" class="flex-none pr-6 text-xl">
+          {% if todo.checked == False %}
+          <i class="lar la-circle"></i>
+          {% else %}
+          <i class="lar la-check-circle text-lime-700"></i>
+          {% endif %}
+        </a>
+        <div class="grow">{{ todo.title }}</div>
+        <a href="{% url 'members_todo_delete' todo.id %}" class="flex-none">
+          <i class="text-xl las la-trash text-red-600"></i>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="text-center">Please add new todo item in the field above.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
