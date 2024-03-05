@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="h-full">
+  <div class="text-black bg-gray-200 rounded p-10">
+    <form action="{% if request.GET.enrollment_id %}{% url 'members_enrollment_update' request.GET.enrollment_id %}{% else %}{% url 'members_enrollment' %}{% endif %}" method="post" class="flex items-center">
+      {% csrf_token %}
+      <div class="w-96 mr-6">
+        {{ form.user }}
+      </div>
+      <div class="w-96">
+        {{ form.course }}
+      </div>
+      <div class="ml-6 ">
+        <button type="submit" class="h-8 px-3 w-full rounded-md shadow text-white bg-blue-500">
+          {% if request.GET.enrollment_id %}Save{% else %}Add{% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="text-black bg-gray-200 rounded p-10 mt-6">
+    {% if user_enrollments %}
+    <ul class="grid grid-cols-1 divide-y">
+      {% for user_enrollment in user_enrollments %}
+      <li class="py-3 flex items-center border-gray-500	">
+        <div class="grow align-middle	">
+          <span class="mr-6">
+            <i class="las la-user mr-2 text-xl"></i>
+            {{ user_enrollment.user }}
+          </span>
+          <span class="mr-6">
+            <i class="las la-school mr-2 text-xl"></i>
+            {{ user_enrollment.course }}
+          </span>
+          <span>
+            <i class="las la-calendar mr-2 text-xl"></i>
+            {{user_enrollment.enrollment_date}}
+          </span>
+        </div>
+          <a href="/members_app/user_enrollment/?enrollment_id={{user_enrollment.id}}">
+            <i class="las la-pen text-xl text-green-600"></i>
+          </a>
+          <a href="{% url 'members_enrollment_delete' user_enrollment.id %}">
+            <i class="text-xl las la-trash text-red-600"></i>
+          </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="text-center">Please add new enrollment item in the fields above.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,15 +1,23 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views import View
-from .forms import WelcomeForm, TodoForm
+from .forms import WelcomeForm, TodoForm, UserEnrollmentForm
 from uuid import uuid4
+from .models import UserEnrollments
+
+
+class MainView(View):
+    # Class-based view for rendering the main page.
+
+    def get(self, request):
+        return render(request, "home.html", {"title": "Main"})
 
 
 class HomeView(View):
     def get(self, request):
         # Render the 'home.html' template with the title "Home".
 
-        return render(request, "home.html", {"title": "Home"})
+        return render(request, "members.html", {"title": "Members"})
 
 
 class MembersView(View):
@@ -142,3 +150,89 @@ class TodoDeleteView(View):
 
         # Redirect to the todo list page after deleting the todo item.
         return HttpResponseRedirect("/members_app/todo/")
+
+
+class UserEnrollmentView(View):
+    # Class-based view for managing a user enrollment list.
+
+    # Template name for rendering the user enrollment list.
+    template_name = "enrollment.html"
+
+    # Form class to handle user enrollment inputs.
+    form = UserEnrollmentForm
+
+    def get(self, request):
+        # Handles GET requests to display the user enrollment list.
+
+        # Retrieve all user enrollments from the database.
+        user_enrollments = UserEnrollments.objects.all()
+
+        # If a enrollment_id is provided in the query parameters, prepopulate the form.
+        if request.GET.get("enrollment_id"):
+            user_enrollment = user_enrollments.filter(
+                id=request.GET.get("enrollment_id")
+            ).first()
+            initial_values = {
+                "user": user_enrollment.user,
+                "course": user_enrollment.course,
+            }
+            self.form = UserEnrollmentForm(initial=initial_values)
+
+        # Render the template with the form and user enrollments data.
+        return render(
+            request,
+            self.template_name,
+            {
+                "title": "Enrollment",
+                "form": self.form,
+                "user_enrollments": user_enrollments,
+            },
+        )
+
+    def post(self, request):
+        # Handles POST requests to process user enrollments form submissions.
+
+        # Instantiate the UserEnrollmentForm with POST data.
+        form = self.form(request.POST)
+
+        # If the form is valid, create a new user enrollment in the database.
+        if form.is_valid():
+            user = form.cleaned_data["user"]
+            course = form.cleaned_data["course"]
+            UserEnrollments.objects.create(user=user, course=course)
+
+        # Redirect to the user enrollments page after processing the form.
+        return HttpResponseRedirect("/members_app/user_enrollment/")
+
+
+class UserEnrollmentDeleteView(View):
+    # Class-based view for deleting a user enrolment.
+
+    def get(self, _, enrollment_id):
+        # Handles GET requests to delete a user enrollment item.
+
+        # Delete the user enrollment with the specified enrollment_id.
+        UserEnrollments.objects.get(id=enrollment_id).delete()
+
+        # Redirect to the user enrollments page after deleting the enrollment.
+        return HttpResponseRedirect("/members_app/user_enrollment/")
+
+
+class UserEnrollmentUpdateView(View):
+    # Handles POST requests to update the user enrollment item.
+
+    def post(self, request, enrollment_id):
+
+        # Create a form instance with the POST data.
+        form = UserEnrollmentForm(request.POST)
+
+        # If the form is valid, update the user enrollment in the database.
+        if form.is_valid():
+            user = form.cleaned_data["user"]
+            course = form.cleaned_data["course"]
+            UserEnrollments.objects.filter(id=enrollment_id).update(
+                user=user, course=course
+            )
+
+            # Redirect to the user enrollments page after updating the course.
+            return HttpResponseRedirect("/members_app/user_enrollment/")

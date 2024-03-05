@@ -12,11 +12,11 @@
   <section class="bg-gray-100 dark:bg-gray-900 dark:text-white text-gray-600 h-screen flex overflow-hidden text-sm">
     <div class="flex-grow overflow-hidden h-full flex flex-col">
       <header class="h-16 lg:flex items-center w-full border-b border-gray-200 dark:border-gray-800 hidden px-10">
-        <a class="h-4/5 pr-3" href="{% url 'members_app' %}">
+        <a class="h-4/5 pr-3" href="{% url 'main' %}">
           {% load static %}
           <img class="h-full" src="{% static 'logo.png' %}" alt="logo">
         </a>
-        {% block header %}{% endblock %}
+        <h1>{{title}}</h1>
       </header>
       <section class="p-10 grow">
         {% block content %}{% endblock %}
