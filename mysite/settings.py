@@ -56,7 +56,7 @@ ROOT_URLCONF = "mysite.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "courses_app/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -77,8 +77,12 @@ WSGI_APPLICATION = "mysite.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "education_db",
+        "USER": "superuser",
+        "PASSWORD": "",
+        "HOST": "localhost",
+        "PORT": "",
     }
 }
 

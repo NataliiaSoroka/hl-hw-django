@@ -1,26 +1,33 @@
 {% extends 'layout.html' %}
 
-
 {% block content %}
 <div class="h-full flex items-center justify-center">
     <div class="w-3/5 h-2/3 text-black bg-gray-200 rounded p-10 flex flex-col items-center justify-center">
         <div class="text-3xl text-center pb-5">
-            Our applications:
+            Welcome to the Todo List!
         </div>
         <div class="text-center">
             <a
                 class="underline underline-offset-4 hover:text-blue-600 text-blue-400 pr-3"
-                href="{% url 'members_app' %}"
+                href="{% url 'members_login' %}"
             >
-                Members App
+                Introduce yourself
+            </a>
+            <a
+                class="underline underline-offset-4 hover:text-blue-600 text-blue-400 pr-3"
+                href="{% url 'members_todo' %}"
+            >
+                Todo
             </a>
             <a
                 class="underline underline-offset-4 hover:text-blue-600 text-blue-400"
-                href="{% url 'courses_app' %}"
+                href="{% url 'members_enrollment' %}"
             >
-                Courses App
+                Enrollment
             </a>
         </div>
     </div>
 </div>
 {% endblock %}
+
+–
