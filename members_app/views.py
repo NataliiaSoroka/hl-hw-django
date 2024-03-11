@@ -1,9 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views import View
-from .forms import WelcomeForm, TodoForm, UserEnrollmentForm
+from .forms import (
+    StyledUserCreationForm,
+    StyledAuthenticationForm,
+    TodoForm,
+    UserEnrollmentForm,
+)
 from uuid import uuid4
 from .models import UserEnrollments
+from django.contrib.auth import login, logout
 
 
 class MainView(View):
@@ -20,19 +26,58 @@ class HomeView(View):
         return render(request, "members.html", {"title": "Members"})
 
 
-class MembersView(View):
+class RegistrationView(View):
+    # Class-based view for handling member registration.
+
+    # Template name for rendering the registration form.
+    template_name = "registration.html"
+
+    # Form class to handle registration inputs.
+    form = StyledUserCreationForm
+
+    def get(self, request):
+        # Handles GET requests to display the registration form.
+
+        # Render the 'registration.html' template with the UserCreationForm and title.
+        return render(
+            request, self.template_name, {"form": self.form, "title": "Registration"}
+        )
+
+    def post(self, request):
+        # Handles POST requests to process form submission.
+
+        # Instantiate the StyledUserCreationForm with POST data.
+        form = self.form(request.POST)
+
+        # If the form is valid, get the user associated with the form
+        if form.is_valid():
+            user = form.save()
+
+            # Log in the user using Django's login function
+            login(request, user)
+
+            # Redirect the user to the home page after successful login
+            return HttpResponseRedirect("/")
+
+        # If form is not valid, render the 'registration.html' template with the form and title.
+        return render(
+            request, self.template_name, {"form": form, "title": "Registration"}
+        )
+
+
+class LoginView(View):
     # Class-based view for handling member login.
 
     # Template name for rendering the login form.
     template_name = "login.html"
 
-    # Form class to handle user input.
-    form = WelcomeForm
+    # Form class to handle login inputs.
+    form = StyledAuthenticationForm
 
     def get(self, request):
         # Handles GET requests to display the login form.
 
-        # Render the 'login.html' template with the WelcomeForm and title.
+        # Render the 'login.html' template with the StyledAuthenticationForm and title.
         return render(
             request, self.template_name, {"form": self.form, "title": "Login"}
         )
@@ -40,29 +85,31 @@ class MembersView(View):
     def post(self, request):
         # Handles POST requests to process form submission.
 
-        # Instantiate the WelcomeForm with POST data.
-        form = self.form(request.POST)
+        # Instantiate the StyledAuthenticationForm with POST data.
+        form = self.form(request, data=request.POST)
 
-        # If form is valid, redirect to success page with the username.
+        # If the form is valid, get the user associated with the form
         if form.is_valid():
-            return HttpResponseRedirect(
-                f"/members_app/success/?username={form.cleaned_data['username']}"
-            )
+            user = form.get_user()
+
+            # Log in the user using Django's login function
+            login(request, user)
+
+            # Redirect the user to the home page after successful login
+            return HttpResponseRedirect("/")
 
         # If form is not valid, render the 'login.html' template with the form and title.
         return render(request, self.template_name, {"form": form, "title": "Login"})
 
 
-class SuccessView(View):
-    def get(self, request):
-        # Handles GET requests to display a welcome message.
+class LogoutView(View):
+    # Class-based view for handling user logout
+    def post(_, request):
+        # Log the user out using Django's logout function
+        logout(request)
 
-        # Render the 'welcome.html' template with the username and title.
-        return render(
-            request,
-            "welcome.html",
-            {"username": request.GET.get("username"), "title": "Welcome"},
-        )
+        # Redirect the user to the home page after logout
+        return HttpResponseRedirect("/")
 
 
 class TodoView(View):

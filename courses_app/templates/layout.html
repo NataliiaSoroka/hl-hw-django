@@ -11,12 +11,38 @@
 <body>
   <section class="bg-gray-100 dark:bg-gray-900 dark:text-white text-gray-600 h-screen flex overflow-hidden text-sm">
     <div class="flex-grow overflow-hidden h-full flex flex-col">
-      <header class="h-16 lg:flex items-center w-full border-b border-gray-200 dark:border-gray-800 hidden px-10">
-        <a class="h-4/5 pr-3" href="{% url 'main' %}">
-          {% load static %}
-          <img class="h-full" src="{% static 'logo.png' %}" alt="logo">
-        </a>
-        <h1>{{title}}</h1>
+      <header class="h-16 lg:flex justify-between items-center w-full border-b border-gray-200 dark:border-gray-800 hidden px-10">
+        <div class="h-full flex items-center">
+          <a class="h-4/5 pr-3" href="{% url 'main' %}">
+            {% load static %}
+            <img class="h-full" src="{% static 'logo.png' %}" alt="logo">
+          </a>
+          <h1>{{title}}</h1>
+        </div>
+        <div class="h-full flex items-center">
+          {% if user.is_authenticated %}
+            <p>Welcome, {{ user.username }}!</p>
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="ml-3 h-8 px-3 rounded-md shadow text-white bg-blue-500">
+                Logout
+              </button>
+            </form>
+          {% else %}
+            <a
+              href="{% url 'login' %}"
+              class="flex items-center h-8 px-3 rounded-md shadow text-white bg-blue-500"
+            >
+              Login
+            </a>
+            <a
+              href="{% url 'registration' %}"
+              class="flex items-center ml-3 h-8 px-3 rounded-md shadow text-white bg-blue-500"
+            >
+              Register
+            </a>
+          {% endif %}
+        </div>
       </header>
       <section class="p-10 grow">
         {% block content %}{% endblock %}

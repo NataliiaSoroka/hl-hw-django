@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
-    MembersView,
-    SuccessView,
+    LoginView,
+    LogoutView,
     HomeView,
     TodoView,
     TodoUpdateView,
@@ -10,14 +10,16 @@ from .views import (
     UserEnrollmentView,
     UserEnrollmentDeleteView,
     UserEnrollmentUpdateView,
+    RegistrationView,
 )
 
 
 urlpatterns = [
     path("", MainView.as_view(), name="main"),
     path("members_app/", HomeView.as_view(), name="members_app"),
-    path("members_app/login/", MembersView.as_view(), name="members_login"),
-    path("members_app/success/", SuccessView.as_view(), name="members_success"),
+    path("registration/", RegistrationView.as_view(), name="registration"),
+    path("login/", LoginView.as_view(), name="login"),
+    path("logout/", LogoutView.as_view(), name="logout"),
     path("members_app/todo/", TodoView.as_view(), name="members_todo"),
     path(
         "members_app/todo/update/<str:todo_id>",
