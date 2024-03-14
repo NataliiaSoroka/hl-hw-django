@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="h-full flex items-center justify-center">
-  <div class="w-3/5 h-2/3 text-black bg-gray-200 rounded p-10 flex flex-col items-center justify-center">
+  <div class="w-3/5 h-fit text-black bg-gray-200 rounded p-10 flex flex-col items-center justify-center">
     <div class="text-3xl text-center pb-5">
       Registration
     </div>
@@ -14,6 +14,13 @@
         </div>
         <div class="w-full pb-3">
           {{ field }}
+          {% if field.errors %}
+                <ul>
+                    {% for error in field.errors %}
+                        <li class="text-red-500 text-xs">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
       {% endfor %}
       <div class="w-full">
